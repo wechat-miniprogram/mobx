@@ -62,7 +62,11 @@ async function generateBundledModule(inputFile, outputFile, format, production) 
             filesizePlugin()
         ]
     } else {
-        plugins = [resolvePlugin(), filesizePlugin()]
+        plugins = [
+            resolvePlugin(),
+            replacePlugin({ "process.env.NODE_ENV": JSON.stringify("development") }),
+            filesizePlugin()
+        ]
     }
 
     const bundle = await rollup({
@@ -89,21 +93,11 @@ function copyFlowDefinitions() {
 
 async function build() {
     runTypeScriptBuild(".build.es5", ts.ScriptTarget.ES5, true)
-    runTypeScriptBuild(".build.es6", ts.ScriptTarget.ES2015, false)
 
     const es5Build = path.join(".build.es5", "mobx.js")
-    const es6Build = path.join(".build.es6", "mobx.js")
 
     await Promise.all([
-        generateBundledModule(es5Build, path.join("lib", "mobx.js"), "cjs", false),
-        generateBundledModule(es5Build, path.join("lib", "mobx.min.js"), "cjs", true),
-
-        generateBundledModule(es5Build, path.join("lib", "mobx.module.js"), "es", false),
-
-        generateBundledModule(es6Build, path.join("lib", "mobx.es6.js"), "es", false),
-
-        generateBundledModule(es5Build, path.join("lib", "mobx.umd.js"), "umd", false),
-        generateBundledModule(es5Build, path.join("lib", "mobx.umd.min.js"), "umd", true)
+        generateBundledModule(es5Build, path.join("miniprogram_dist", "index.js"), "cjs", false)
     ])
     copyFlowDefinitions()
 }

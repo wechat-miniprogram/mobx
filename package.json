@@ -1,8 +1,9 @@
 {
-  "name": "mobx",
-  "version": "4.13.0",
-  "description": "Simple, scalable state management.",
-  "main": "lib/mobx.js",
+  "name": "mobx-miniprogram",
+  "version": "4.13.0-alpha.1",
+  "description": "MobX build for WeChat miniprogram",
+  "miniprogram": "miniprogram_dist",
+  "main": "miniprogram_dist/index.js",
   "umd:main": "lib/mobx.umd.js",
   "module": "lib/mobx.module.js",
   "browser": {

@@ -1,3 +1,11 @@
+# mobx-miniprogram
+
+可用于小程序的 MobX 构建版本。基于 MobX 4 （因为 iOS 9 不支持 MobX 5 ）。
+
+`npm install mobx-miniprogram --save`
+
+以下是 MobX 原本的 README 。
+
 <img src="docs/mobx.png" alt="logo" height="120" align="right" />
 
 # MobX
