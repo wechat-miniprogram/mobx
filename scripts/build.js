@@ -97,7 +97,7 @@ async function build() {
     const es5Build = path.join(".build.es5", "mobx.js")
 
     await Promise.all([
-        generateBundledModule(es5Build, path.join("miniprogram_dist", "index.js"), "cjs", false)
+        generateBundledModule(es5Build, path.join("miniprogram_dist", "index.js"), "cjs", true)
     ])
     copyFlowDefinitions()
 }
