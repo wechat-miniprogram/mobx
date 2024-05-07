@@ -1,3 +1,7 @@
+# WeChat MiniProgram compatible build of MobX
+
+This is a special build of MobX that is compatible with WeChat MiniProgram.
+
 <img src="https://mobx.js.org/assets/mobx.png" alt="logo" height="120" align="right" />
 
 # MobX

@@ -1,9 +1,9 @@
 {
-    "name": "mobx",
-    "version": "6.3.10",
+    "name": "mobx-miniprogram",
+    "version": "6.3.10-alpha.1",
     "description": "Simple, scalable state management.",
     "source": "src/mobx.ts",
-    "main": "dist/index.js",
+    "main": "dist/mobx.cjs.production.min.js",
     "umd:main": "dist/mobx.umd.production.min.js",
     "unpkg": "dist/mobx.umd.production.min.js",
     "jsdelivr": "dist/mobx.umd.production.min.js",
