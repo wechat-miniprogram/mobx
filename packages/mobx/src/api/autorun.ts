@@ -12,7 +12,8 @@ import {
     isFunction,
     isPlainObject,
     die,
-    allowStateChanges
+    allowStateChanges,
+    GenericAbortSignal
 } from "../internal"
 
 export interface IAutorunOptions {
@@ -25,6 +26,7 @@ export interface IAutorunOptions {
     requiresObservable?: boolean
     scheduler?: (callback: () => void) => any
     onError?: (error: any) => void
+    signal?: GenericAbortSignal
 }
 
 /**
@@ -38,8 +40,12 @@ export function autorun(
     opts: IAutorunOptions = EMPTY_OBJECT
 ): IReactionDisposer {
     if (__DEV__) {
-        if (!isFunction(view)) die("Autorun expects a function as first argument")
-        if (isAction(view)) die("Autorun does not accept actions since actions are untrackable")
+        if (!isFunction(view)) {
+            die("Autorun expects a function as first argument")
+        }
+        if (isAction(view)) {
+            die("Autorun does not accept actions since actions are untrackable")
+        }
     }
 
     const name: string =
@@ -69,7 +75,9 @@ export function autorun(
                     isScheduled = true
                     scheduler(() => {
                         isScheduled = false
-                        if (!reaction.isDisposed_) reaction.track(reactionRunner)
+                        if (!reaction.isDisposed_) {
+                            reaction.track(reactionRunner)
+                        }
                     })
                 }
             },
@@ -82,8 +90,10 @@ export function autorun(
         view(reaction)
     }
 
-    reaction.schedule_()
-    return reaction.getDisposer_()
+    if (!opts?.signal?.aborted) {
+        reaction.schedule_()
+    }
+    return reaction.getDisposer_(opts?.signal)
 }
 
 export type IReactionOptions<T, FireImmediately extends boolean> = IAutorunOptions & {
@@ -111,9 +121,12 @@ export function reaction<T, FireImmediately extends boolean = false>(
     opts: IReactionOptions<T, FireImmediately> = EMPTY_OBJECT
 ): IReactionDisposer {
     if (__DEV__) {
-        if (!isFunction(expression) || !isFunction(effect))
+        if (!isFunction(expression) || !isFunction(effect)) {
             die("First and second argument to reaction should be functions")
-        if (!isPlainObject(opts)) die("Third argument of reactions should be an object")
+        }
+        if (!isPlainObject(opts)) {
+            die("Third argument of reactions should be an object")
+        }
     }
     const name = opts.name ?? (__DEV__ ? "Reaction@" + getNextId() : "Reaction")
     const effectAction = action(
@@ -126,7 +139,6 @@ export function reaction<T, FireImmediately extends boolean = false>(
     let firstTime = true
     let isScheduled = false
     let value: T
-    let oldValue: T | undefined
 
     const equals: IEqualsComparer<T> = (opts as any).compareStructural
         ? comparer.structural
@@ -148,24 +160,31 @@ export function reaction<T, FireImmediately extends boolean = false>(
 
     function reactionRunner() {
         isScheduled = false
-        if (r.isDisposed_) return
+        if (r.isDisposed_) {
+            return
+        }
         let changed: boolean = false
+        const oldValue = value
         r.track(() => {
             const nextValue = allowStateChanges(false, () => expression(r))
             changed = firstTime || !equals(value, nextValue)
-            oldValue = value
             value = nextValue
         })
 
-        // This casting is nesessary as TS cannot infer proper type in current funciton implementation
+        // This casting is nesessary as TS cannot infer proper type in current function implementation
         type OldValue = FireImmediately extends true ? T | undefined : T
-        if (firstTime && opts.fireImmediately!) effectAction(value, oldValue as OldValue, r)
-        else if (!firstTime && changed) effectAction(value, oldValue as OldValue, r)
+        if (firstTime && opts.fireImmediately!) {
+            effectAction(value, oldValue as OldValue, r)
+        } else if (!firstTime && changed) {
+            effectAction(value, oldValue as OldValue, r)
+        }
         firstTime = false
     }
 
-    r.schedule_()
-    return r.getDisposer_()
+    if (!opts?.signal?.aborted) {
+        r.schedule_()
+    }
+    return r.getDisposer_(opts?.signal)
 }
 
 function wrapErrorHandler(errorHandler, baseFn) {

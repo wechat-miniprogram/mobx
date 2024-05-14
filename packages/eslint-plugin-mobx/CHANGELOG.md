@@ -1,5 +1,17 @@
 # eslint-plugin-mobx
 
+## 0.0.9
+
+### Patch Changes
+
+-   [`e63c2df0`](https://github.com/mobxjs/mobx/commit/e63c2df0ef166868675bce21892cd686a46db953) [#3443](https://github.com/mobxjs/mobx/pull/3443) Thanks [@urugator](https://github.com/urugator)! - changeset for PR #3423: deprecate no-anonymous-observer
+
+## 0.0.8
+
+### Patch Changes
+
+-   [`aafda613`](https://github.com/mobxjs/mobx/commit/aafda6136afd107c6cbdd73d9bab57e45a2eb9f5) [#3256](https://github.com/mobxjs/mobx/pull/3256) Thanks [@urugator](https://github.com/urugator)! - fix `no-anonymous-observer` autofix for arrow functions without BlockStatement body
+
 ## 0.0.7
 
 ### Patch Changes

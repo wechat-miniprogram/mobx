@@ -20,7 +20,7 @@ export function intercept<T>(
     handler: IInterceptor<IValueWillChange<T>>
 ): Lambda
 export function intercept<T>(
-    observableArray: IObservableArray<T>,
+    observableArray: IObservableArray<T> | Array<T>,
     handler: IInterceptor<IArrayWillChange<T> | IArrayWillSplice<T>>
 ): Lambda
 export function intercept<K, V>(
@@ -43,8 +43,11 @@ export function intercept<T extends object, K extends keyof T>(
     handler: IInterceptor<IValueWillChange<T[K]>>
 ): Lambda
 export function intercept(thing, propOrHandler?, handler?): Lambda {
-    if (isFunction(handler)) return interceptProperty(thing, propOrHandler, handler)
-    else return interceptInterceptable(thing, propOrHandler)
+    if (isFunction(handler)) {
+        return interceptProperty(thing, propOrHandler, handler)
+    } else {
+        return interceptInterceptable(thing, propOrHandler)
+    }
 }
 
 function interceptInterceptable(thing, handler) {
