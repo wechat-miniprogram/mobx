@@ -1,6 +1,6 @@
 {
     "name": "mobx-miniprogram",
-    "version": "6.12.3-alpha.1",
+    "version": "6.12.3",
     "description": "Simple, scalable state management.",
     "source": "src/mobx.ts",
     "main": "dist/mobx.cjs.production.min.js",
